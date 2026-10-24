@@ -10,6 +10,20 @@
 #   docker run --rm -v infra_seed-data:/out -v "$PWD/seed-out:/src:ro" \
 #     alpine sh -c 'cp -a /src/. /out/'
 services:
+  # Public dashboard: the bundle bakes the gateway address at build time, so
+  # the VM build must point at the VM's public IP (and ports 4000/4600 must
+  # be open) for visitors' browsers to fetch data.
+  dashboard:
+    build:
+      context: ../dashboard
+      dockerfile: Dockerfile
+      args:
+        VITE_GATEWAY_URL: http://34.61.219.209:4000
+
+  gateway:
+    environment:
+      DASHBOARD_URL: http://34.61.219.209:4600
+
   seed:
     entrypoint:
       - sh
