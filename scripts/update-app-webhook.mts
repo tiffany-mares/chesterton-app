@@ -6,8 +6,10 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 
 const TUNNEL = process.argv[2];
-if (!TUNNEL?.startsWith("https://")) {
-  console.error("usage: npx tsx scripts/update-app-webhook.mts https://<tunnel-host>");
+// http:// is allowed for a bare-IP host (e.g. the GCP VM) — GitHub accepts it
+// and deliveries are HMAC-signed; prefer https when the host has TLS.
+if (!TUNNEL?.startsWith("https://") && !TUNNEL?.startsWith("http://")) {
+  console.error("usage: npx tsx scripts/update-app-webhook.mts http(s)://<host>");
   process.exit(1);
 }
 

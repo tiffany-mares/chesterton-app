@@ -1,0 +1,23 @@
+# VM overlay: boot against a PRE-POPULATED seed-data volume and never
+# re-run real seeding (seed.py --reset would wipe the volume and, with
+# Slack/Linear tokens in the env, re-post all 18 threads/tickets).
+#
+#   docker compose --env-file ../.env \
+#     -f docker-compose.yml -f docker-compose.real.yml -f docker-compose.vm.yml up -d
+#
+# Populate the volume once before first boot (from a tarball of the
+# real-seeded seed/out):
+#   docker run --rm -v infra_seed-data:/out -v "$PWD/seed-out:/src:ro" \
+#     alpine sh -c 'cp -a /src/. /out/'
+services:
+  seed:
+    entrypoint:
+      - sh
+      - -c
+      - >
+        if [ -f /out/knowledge.json ]; then
+          echo 'seed-data volume already populated; skipping re-seed';
+        else
+          echo 'ERROR: seed-data volume is empty — transfer the real-seeded fixtures first (see header comment)' >&2;
+          exit 1;
+        fi
