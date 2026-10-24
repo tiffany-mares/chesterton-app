@@ -1,0 +1,37 @@
+# sdd scratch
+.superpowers/
+
+# node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# rust
+target/
+
+# go
+verdict/bin/
+verdict/*.exe
+verdict/verdict_e2e
+
+# java
+ledger/target/
+
+# seed + runtime data
+seed/out/
+gateway/data/
+
+# env
+.env
+
+# misc
+*.log
+.DS_Store
+*.docx
+docs/demo-backup/

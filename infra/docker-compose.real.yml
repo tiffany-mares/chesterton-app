@@ -1,0 +1,37 @@
+# Hybrid-mode overlay: real GitHub (App auth, live webhooks via tunnel),
+# mock Estelle. Values interpolate from the repo's gitignored .env:
+#
+#   docker compose --env-file ../.env \
+#     -f docker-compose.yml -f docker-compose.real.yml up -d gateway verdict
+#
+# The App's webhook must point at a tunnel to localhost:4000 (e.g.
+# `cloudflared tunnel --url http://localhost:4000`), and the demo repo must
+# be added to the App installation before firing PRs.
+services:
+  # Re-run seeding with real Slack/Linear posting (Phase 4):
+  #   docker compose --env-file ../.env -f docker-compose.yml \
+  #     -f docker-compose.real.yml run --rm seed
+  # then restart mocks (reloads knowledge.json) and re-import into ledger.
+  seed:
+    environment:
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN:-}
+      SLACK_CHANNEL_ID: ${SLACK_CHANNEL_ID:-}
+      LINEAR_API_KEY: ${LINEAR_API_KEY:-}
+      LINEAR_TEAM_ID: ${LINEAR_TEAM_ID:-}
+      # When set, pr-type citations point at real commits in this repo
+      # instead of mock PR pages (the historical fixes exist as commits).
+      REAL_REPO_URL: ${REAL_REPO_URL:-}
+
+  gateway:
+    environment:
+      GITHUB_API_URL: https://api.github.com
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET}
+      GITHUB_APP_ID: ${GITHUB_APP_ID}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY}
+      GITHUB_APP_INSTALLATION_ID: ${GITHUB_APP_INSTALLATION_ID}
+
+  verdict:
+    environment:
+      # Check runs post to real GitHub with the installation token the
+      # gateway forwards; Estelle stays the mock (base compose env).
+      GITHUB_API_URL: https://api.github.com

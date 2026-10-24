@@ -1,0 +1,22 @@
+{
+  "threads": [
+    {
+      "channel": "oncall",
+      "ts": "1700000000",
+      "title": "#oncall: retry cap",
+      "messages": [
+        { "user": "Person 1", "text": "checkout is hammering payments, retries are unbounded", "ts": "1700000000" },
+        { "user": "Person 2", "text": "capping at 3 with backoff, ticket incoming", "ts": "1700000001" }
+      ]
+    },
+    {
+      "channel": "oncall",
+      "ts": "1700000006",
+      "title": "#oncall: checkout timeout",
+      "messages": [
+        { "user": "Person 7", "text": "checkout timeouts are firing during the provider's slow periods", "ts": "1700000006" },
+        { "user": "Person 3", "text": "bumping the checkout timeout to 30s, ticket incoming", "ts": "1700000007" }
+      ]
+    }
+  ]
+}
